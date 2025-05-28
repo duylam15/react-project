@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import StoryList from '../../components/StoryList/StoryList';
 import Avatar from '../../components/Avatar';
 import { useTranslation } from 'react-i18next';
+import { callLogout, getPost, getUser } from '../../services/auth';
 
 export default function Home() {
 	const { t } = useTranslation();
+	const onCLick = () => {
+		callLogout()
+	}
+
+	useEffect(() => {
+		getPost()
+		getUser()
+	}, [])
+
 	return (
 		<div className="home flex gap-25 justify-center  ml-30">
 			<StoryList />
 			<div className='w-80 mt-6'>
 				<div className="flex  items-center justify-between gap-20">
 					<Avatar height='h-12' width='w-12' />
-					<div className=" rounded-md font-medium text-[14px]  leading-[100%] text-blue-400">
+					<div className=" rounded-md font-medium text-[14px]  leading-[100%] text-blue-400" onClick={onCLick}>
 						{t('switch')}
 					</div>
 				</div>
