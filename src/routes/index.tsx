@@ -10,6 +10,8 @@ import Explore from '../pages/explore';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import ForgotPassword from '../pages/forgotpassword';
+import AdminPage from '../pages/admin';
+import ProtectedRoute from './ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -35,19 +37,27 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: '/admin',
+    element: <LayoutDefault />, // thêm layout vào
+    errorElement: <Error />,
+    children: [
+      {
+        index: true,
+        element: (
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
   {
     path: '/login',
-    element:<Login/>
+    element: (
+      <Login />
+    ),
   },
-
-  {
-    path: '/register',
-    element:<Register/>
-  },
-
-  {
-    path: '/forgotpassword',
-    element:<ForgotPassword/>
-  },
+  { path: '/register', element: <Register /> },
+  { path: '/forgotpassword', element: <ForgotPassword /> },
 ]);

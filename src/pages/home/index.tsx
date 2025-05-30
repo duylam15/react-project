@@ -3,12 +3,22 @@ import StoryList from '../../components/StoryList/StoryList';
 import Avatar from '../../components/Avatar';
 import { useTranslation } from 'react-i18next';
 import { callLogout, getPost, getUser } from '../../services/auth';
+import useUserStore from '../../stores/useUserStore';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function Home() {
 	const { t } = useTranslation();
+	const user = useUserStore((state: any) => state?.user);
+	const setUser = useUserStore((state) => state?.setUser);
+	const navigate = useNavigate()
+
 	const onCLick = () => {
 		callLogout()
+		setUser(null);
+		localStorage.setItem("isLogin", "false")
+		navigate("/login");
 	}
+	console.log("user ngoài", user)
 
 	useEffect(() => {
 		getPost()

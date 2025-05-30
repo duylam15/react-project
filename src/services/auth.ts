@@ -65,7 +65,6 @@ export const getUser = async () => {
             "/users/1",
             { withCredentials: true } // cấu hình
         );
-        console.log("get user:", res);
         return res;
     } catch (error) {
         console.error("Lỗi khi get user:", error);
@@ -73,7 +72,7 @@ export const getUser = async () => {
     }
 };
 
-export const callInfoUser = (token) => {
+export const callInfoUser = (token: any) => {
     return axios.get("/taikhoan/me", {
         headers: {
             Authorization: `Bearer ${token}`, // Thêm token vào header

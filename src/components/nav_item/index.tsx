@@ -14,7 +14,6 @@ export default function NavItem({
   onClick: () => void;
 }): JSX.Element {
 
-  console.log("isActiveisActive", isActive)
   return (
     <div
       className={`${styles.nav_item} ${isActive ? styles.active : ""}`}
