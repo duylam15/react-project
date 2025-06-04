@@ -15,7 +15,7 @@ export default function Home() {
 	const onCLick = () => {
 		callLogout()
 		setUser(null);
-		localStorage.setItem("isLogin", "false")
+		localStorage.removeItem("isLogin");
 		navigate("/login");
 	}
 	console.log("user ngoài", user)

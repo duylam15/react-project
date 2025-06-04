@@ -37,10 +37,8 @@ export const callLogout = async () => {
             {}, // body rỗng
             { withCredentials: true } // cấu hình
         );
-        console.log("Đăng xuất thành công:", res);
         return res;
     } catch (error) {
-        console.error("Lỗi khi đăng xuất:", error);
         throw error; // ném lại lỗi nếu cần xử lý ở component
     }
 };
@@ -51,10 +49,9 @@ export const getPost = async () => {
             "/posts/",
             { withCredentials: true } // cấu hình
         );
-        console.log("get post:", res);
+        console.log("res post", res);
         return res;
     } catch (error) {
-        console.error("Lỗi khi getpost:", error);
         throw error; // ném lại lỗi nếu cần xử lý ở component
     }
 };

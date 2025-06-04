@@ -43,7 +43,7 @@ const StoryList = () => {
 					<div key={index} className="item flex flex-col items-center shrink-0">
 						<img
 							className="w-17 h-17 rounded-full border-2 border-pink-500 p-0.5 object-cover"
-							src="/public/images/uifaces-popular-image (11).jpg"
+							src="/images/uifaces-popular-image (11).jpg"
 							alt=""
 							draggable="false"
 						/>

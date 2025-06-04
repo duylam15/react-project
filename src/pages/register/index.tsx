@@ -15,23 +15,23 @@ const Register = () => {
   });
 
   // Định nghĩa kiểu dữ liệu cho formValues
-type FormValuesType = {
-  email: string;
-  fullname: string;
-  username: string;
-  password: string;
-};
+  type FormValuesType = {
+    email: string;
+    fullname: string;
+    username: string;
+    password: string;
+  };
 
-// Định nghĩa kiểu dữ liệu cho errors
-type ErrorType = {
-  [key: string]: string;
-};
-
-
-const [errors, setErrors] = useState<ErrorType>({});
+  // Định nghĩa kiểu dữ liệu cho errors
+  type ErrorType = {
+    [key: string]: string;
+  };
 
 
- 
+  const [errors, setErrors] = useState<ErrorType>({});
+
+
+
   const navigate = useNavigate();
 
   // Xử lý thay đổi dữ liệu & xóa lỗi khi nhập lại
@@ -50,7 +50,7 @@ const [errors, setErrors] = useState<ErrorType>({});
       newErrors.email = "Email không hợp lệ!";
     }
     if (!formValues.fullname.trim()) {
-      newErrors.fullname= "Họ và tên không được để trống!";
+      newErrors.fullname = "Họ và tên không được để trống!";
     }
     if (!formValues.username.trim()) {
       newErrors.username = "Tên đăng nhập không được để trống!";
@@ -93,7 +93,7 @@ const [errors, setErrors] = useState<ErrorType>({});
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      
+
 
       <div className="flex flex-col items-center w-[350px] bg-white p-8 rounded-lg shadow-md border border-gray-200">
         <div className="flex justify-center mb-3">
@@ -105,8 +105,8 @@ const [errors, setErrors] = useState<ErrorType>({});
         </p>
 
         <button className="flex button_facebook items-center justify-center bg-blue-700 text-white font-semibold p-2 rounded-lg w-full hover:bg-blue-800 transition duration-300 "
-          style={{ paddingTop: 5, paddingBottom: 5}}>
-            <FacebookOutlined style={{ fontSize: "20px", color: "#fff", marginRight: 10 }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+          style={{ paddingTop: 5, paddingBottom: 5 }}>
+          <FacebookOutlined style={{ fontSize: "20px", color: "#fff", marginRight: 10 }} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
           Đăng ký bằng Facebook
         </button>
 
@@ -117,16 +117,15 @@ const [errors, setErrors] = useState<ErrorType>({});
         </div>
 
         <div className="flex flex-col w-full">
-          
+
           <div className="mb-2">
             <input
               type="text"
               placeholder="Email"
               value={formValues.email}
               onChange={handleChange}
-              className={`p-2 border rounded-md text-sm w-full ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:border-black`}
+              className={`p-2 border rounded-md text-sm w-full ${errors.email ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:border-black`}
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
@@ -138,13 +137,12 @@ const [errors, setErrors] = useState<ErrorType>({});
               value={formValues.fullname}
               onChange={handleChange}
               placeholder="Tên đầy đủ"
-              className={`p-2 border rounded-md text-sm w-full ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:border-black`}
+              className={`p-2 border rounded-md text-sm w-full ${errors.password ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:border-black`}
             />
-            {errors.fullname&& <p className="text-red-500 text-xs mt-1">{errors.fullname}</p>}
+            {errors.fullname && <p className="text-red-500 text-xs mt-1">{errors.fullname}</p>}
           </div>
-          
+
 
           <div className="mb-2">
             <input
@@ -152,23 +150,21 @@ const [errors, setErrors] = useState<ErrorType>({});
               value={formValues.username}
               onChange={handleChange}
               placeholder="Tên người dùng"
-              className={`p-2 border rounded-md text-sm w-full ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:border-black`}
+              className={`p-2 border rounded-md text-sm w-full ${errors.password ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:border-black`}
             />
             {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
           </div>
 
-          
+
           <div className="mb-2">
             <input
               type="password"
               placeholder="Mật khẩu"
               value={formValues.password}
               onChange={handleChange}
-              className={`p-2 border rounded-md text-sm w-full ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } focus:outline-none focus:border-black`}
+              className={`p-2 border rounded-md text-sm w-full ${errors.password ? "border-red-500" : "border-gray-300"
+                } focus:outline-none focus:border-black`}
             />
             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>

@@ -20,10 +20,10 @@ const InstagramPost = ({ first }: { first?: string }) => {
 	const [saved, setSaved] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const images = [
-		"/public/images/uifaces-popular-image (11).jpg",
-		"/public/images/uifaces-popular-image (11).jpg",
-		"/public/images/uifaces-popular-image (11).jpg",
-		"/public/images/uifaces-popular-image (11).jpg",
+		"/images/uifaces-popular-image (11).jpg",
+		"/images/uifaces-popular-image (11).jpg",
+		"/images/uifaces-popular-image (11).jpg",
+		"/images/uifaces-popular-image (11).jpg",
 	];
 	// Lấy giá trị theme từ context
 	const { theme } = useTheme();
@@ -38,7 +38,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 			<div className="flex items-center justify-between pt-3 pb-3">
 				<div className="flex items-center gap-3">
 					<img
-						src="/public/images/uifaces-popular-image (11).jpg"
+						src="/images/uifaces-popular-image (11).jpg"
 						alt="Avatar"
 						className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 					/>
@@ -53,22 +53,22 @@ const InstagramPost = ({ first }: { first?: string }) => {
 				infinite={false}
 				arrows className="ant-custom">
 				<img
-					src="/public/images/uifaces-popular-image (11).jpg"
+					src="/images/uifaces-popular-image (11).jpg"
 					alt="Post"
 					className="w-full h-[585px] object-cover rounded-lg"
 				/>
 				<img
-					src="/public/images/uifaces-popular-image (11).jpg"
+					src="/images/uifaces-popular-image (11).jpg"
 					alt="Post"
 					className="w-full h-[585px] object-cover rounded-lg"
 				/>
 				<img
-					src="/public/images/uifaces-popular-image (11).jpg"
+					src="/images/uifaces-popular-image (11).jpg"
 					alt="Post"
 					className="w-full h-[585px] object-cover rounded-lg"
 				/>
 				<img
-					src="/public/images/uifaces-popular-image (11).jpg"
+					src="/images/uifaces-popular-image (11).jpg"
 					alt="Post"
 					className="w-full h-[585px] object-cover rounded-lg"
 				/>
@@ -118,7 +118,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 								style={{ borderColor: "var(--white-to-gray)" }}>
 								<div className="flex items-center justify-center gap-3">
 									<img
-										src="/public/images/uifaces-popular-image (11).jpg"
+										src="/images/uifaces-popular-image (11).jpg"
 										alt="Avatar"
 										className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 									/>
@@ -130,7 +130,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 							<div className="pt-2 pl-5 pr-5 flex flex-col items-start gap-3">
 								<div className="flex  items-center gap-3">
 									<img
-										src="/public/images/uifaces-popular-image (11).jpg"
+										src="/images/uifaces-popular-image (11).jpg"
 										alt="Avatar"
 										className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 									/>
@@ -143,7 +143,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 								</div>
 								<div className="flex  items-center gap-3">
 									<img
-										src="/public/images/uifaces-popular-image (11).jpg"
+										src="/images/uifaces-popular-image (11).jpg"
 										alt="Avatar"
 										className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 									/>
@@ -155,7 +155,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 									</div>
 								</div><div className="flex  items-center gap-3">
 									<img
-										src="/public/images/uifaces-popular-image (11).jpg"
+										src="/images/uifaces-popular-image (11).jpg"
 										alt="Avatar"
 										className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 									/>
@@ -167,7 +167,7 @@ const InstagramPost = ({ first }: { first?: string }) => {
 									</div>
 								</div><div className="flex  items-center gap-3">
 									<img
-										src="/public/images/uifaces-popular-image (11).jpg"
+										src="/images/uifaces-popular-image (11).jpg"
 										alt="Avatar"
 										className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 									/>

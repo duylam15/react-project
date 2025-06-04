@@ -8,7 +8,7 @@ i18n.use(HttpBackend) // Load file JSON từ public
     .use(initReactI18next)
     .init({
         fallbackLng: "en", // Ngôn ngữ mặc định
-        debug: true, // Bật debug (có thể tắt khi chạy production)
+        debug: false, // Bật debug (có thể tắt khi chạy production)
         interpolation: { escapeValue: false }, // Không cần escape HTML
         backend: {
             loadPath: "/locales/{{lng}}.json", // Đường dẫn file dịch
