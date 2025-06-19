@@ -35,7 +35,7 @@ export default function Home() {
 				<div className="flex  items-center justify-between gap-20">
 					<Avatar height='h-12' width='w-12' />
 					<div className=" rounded-md font-medium text-[14px]  leading-[100%] text-blue-400" onClick={onCLick}>
-						{t('switch')}
+						{t('switch')}adada
 					</div>
 				</div>
 				<div className='flex items-center justify-between mt-7'>
