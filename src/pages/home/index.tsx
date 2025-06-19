@@ -18,6 +18,9 @@ export default function Home() {
 		localStorage.removeItem("isLogin");
 		navigate("/login");
 	}
+	const onCLick2 = () => {
+		getPost()
+	}
 	console.log("user ngoài", user)
 
 	useEffect(() => {
@@ -43,7 +46,7 @@ export default function Home() {
 				<div className="cursor-pointer flex flex-col gap-5 mt-4  justify-between w-full">
 					<div className="flex  items-center justify-between gap-20">
 						<Avatar height='h-12' width='w-12' />
-						<div className=" rounded-md font-medium text-[14px]  leading-[100%] text-blue-400">
+						<div onClick={onCLick2} className=" rounded-md font-medium text-[14px]  leading-[100%] text-blue-400">
 							{t('follow')}
 						</div>
 					</div>

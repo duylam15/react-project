@@ -22,7 +22,7 @@ export const loginTest = async (email: any, password: any) => {
 };
 
 export const callRegister = async (data: RegisterData) => {
-    return axios.post("/api/auth/register", {
+    return instance.post("/api/auth/register", {
         email: data.email,
         fullName: data.fullname,
         username: data.username,
@@ -32,8 +32,8 @@ export const callRegister = async (data: RegisterData) => {
 
 export const callLogout = async () => {
     try {
-        const res = await instance.post(
-            "/auth/logout/",
+        const res = await axios.post(
+            "http://localhost:8000/api/auth/logout/",
             {}, // body rỗng
             { withCredentials: true } // cấu hình
         );
@@ -70,7 +70,7 @@ export const getUser = async () => {
 };
 
 export const callInfoUser = (token: any) => {
-    return axios.get("/taikhoan/me", {
+    return instance.get("/taikhoan/me", {
         headers: {
             Authorization: `Bearer ${token}`, // Thêm token vào header
         },
