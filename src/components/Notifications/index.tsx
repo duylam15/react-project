@@ -1,27 +1,65 @@
-import React from 'react'
-import styles from "./SettingBox.module.css";
-import { useTranslation } from 'react-i18next';
+// src/components/NotificationPopup.js
+import { useEffect, useState } from "react";
+import { connectSocket, disconnectSocket } from "../../helpers/socket/index";
+import axios from "axios";
+import usePostStore from "../../stores/postStore";
+
+export default function Notification() {
+	const [notifications, setNotifications] = useState([]);
+	const getUserId = () => {
+		try {
+			const userStorage = localStorage.getItem("user-storage");
+			if (!userStorage) return null;
+			const parsed = JSON.parse(userStorage);
+			return parsed.state?.user?.id || null;
+		} catch (err) {
+			console.error("Lỗi khi lấy userId từ localStorage:", err);
+			return null;
+		}
+	};
 
 
+	const doRefresh = usePostStore(state => state.doRefresh);
+	const refresh = usePostStore(state => state.refresh);
 
-export default function Notifications() {
-	const { t } = useTranslation();
+	const userId = getUserId();
 
+	useEffect(() => {
+		if (!userId) return;
+
+		// Kết nối WebSocket
+		connectSocket(userId, (data) => {
+			doRefresh()
+			setNotifications((prev) => [data, ...prev]);
+		});
+
+		axios.get("http://localhost:8000/api/notifications/", {
+			withCredentials: true,
+		}).then((res) => {
+			setNotifications(prev => {
+				// Nếu prev.length === 0 thì user chưa nhận gì => dùng kết quả API
+				if (prev.length === 0) return res.data;
+
+				// Nếu có realtime trước đó => gộp thêm vào (tránh trùng bằng ID)
+				const existingIds = new Set(prev.map(item => item.id));
+				const newNotis = res.data.filter(n => !existingIds.has(n.id));
+				return [...prev, ...newNotis];
+			});
+		});
+
+
+		return () => {
+			disconnectSocket();
+		};
+	}, [userId, refresh]);
+	console.log("notifications", notifications)
 	return (
-		<div className="w-[400px] relative" >
-			<div onClick={(e) => e.stopPropagation()}>
-				<div className="text-[24px] font-bold mt-3 p-4">{t('notifications')}</div>
-				<div className="text-[16px] font-bold  p-4">{t('previous')}</div>
-				<div className="cursor-pointer hover-effect flex items-center justify-center gap-3 p-4">
-					<img src="/public/images/uifaces-popular-image (11).jpg" className="w-10 h-10 rounded-full" />
-					<div className="flex  items-center justify-center gap-2">
-						<div className="font-medium text-[15px]">username <strong className='font-normal'>{t('started_following_you')}</strong><strong className='font-light'> 1 {t('week')} </strong></div>
-						<div className="bg-gray-200 px-4 py-1 rounded-md font-medium text-[14px] text-center w-[180px] h-[32px] leading-[100%] flex items-center justify-center text-black-600" style={{ background: "var( --hover-color)" }}>
-							{t('following')}
-						</div>
-					</div>
+		<div className=" w-[500px] overflow-y-auto">
+			{Array.isArray(notifications) && notifications.map((noti, idx) => (
+				<div key={noti.id || idx} className="text-black">
+					{noti.content}
 				</div>
-			</div>
+			))}
 		</div>
-	)
+	);
 }

@@ -30,32 +30,25 @@ const StoryList = () => {
 	};
 
 	return (
-		<div className="home">
-			<div
-				ref={listRef}
-				className="list-story flex gap-4 overflow-x-auto max-w-[640px] p-2 mt-3 whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing relative z-10"
-				onMouseDown={handleMouseDown}
-				onMouseMove={handleMouseMove}
-				onMouseLeave={handleMouseUp}
-				onMouseUp={handleMouseUp}
-			>
-				{[...Array(10)].map((_, index) => (
-					<div key={index} className="item flex flex-col items-center shrink-0">
-						<img
-							className="w-17 h-17 rounded-full border-2 border-pink-500 p-0.5 object-cover"
-							src="/images/uifaces-popular-image (11).jpg"
-							alt=""
-							draggable="false"
-						/>
-						<p className="text-[13px]  text-center">Name</p>
-					</div>
-				))}
-			</div>
-			<div className="list-post ml-22 mt-[-10px]">
-				<InstagramPost first="first" />
-				<InstagramPost />
-				<InstagramPost />
-			</div>
+		<div
+			ref={listRef}
+			className="list-story flex gap-4 overflow-x-auto max-w-[640px] p-2 mt-3 whitespace-nowrap scrollbar-hide cursor-grab active:cursor-grabbing relative z-10"
+			onMouseDown={handleMouseDown}
+			onMouseMove={handleMouseMove}
+			onMouseLeave={handleMouseUp}
+			onMouseUp={handleMouseUp}
+		>
+			{[...Array(10)].map((_, index) => (
+				<div key={index} className="item flex flex-col items-center shrink-0">
+					<img
+						className="w-17 h-17 rounded-full border-2 border-pink-500 p-0.5 object-cover"
+						src="/images/uifaces-popular-image (11).jpg"
+						alt=""
+						draggable="false"
+					/>
+					<p className="text-[13px]  text-center">Name</p>
+				</div>
+			))}
 		</div>
 	);
 };

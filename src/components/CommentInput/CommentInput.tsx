@@ -1,64 +1,46 @@
-import { useState, useRef } from "react";
-import { FaSmile } from "react-icons/fa";
-import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
-import { useTranslation } from "react-i18next";
+// src/components/CommentBox.js
+import { useState } from "react";
+import axios from "axios";
+import usePostStore from "../../stores/postStore";
 
-const CommentInput = () => {
-	const [comment, setComment] = useState("");
-	const [showPicker, setShowPicker] = useState(false);
-	const inputRef = useRef(null);
-	const { t } = useTranslation();
+export default function CommentInput({ postId, onComment }) {
+	const [content, setContent] = useState("");
+	const doRefresh = usePostStore(state => state.doRefresh);
 
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!content.trim()) return;
 
-	const handleEmojiSelect = (emoji: { native: string }) => {
-		setComment((prev) => prev + emoji.native); // Thêm emoji vào nội dung input
-		setShowPicker(false); // Ẩn picker sau khi chọn
-	};
+		try {
+			const res = await axios.post(
+				"http://localhost:8000/api/comments/",
+				{
+					post: postId,
+					content,
+					type_comment: "NORMAL",
+					parent: null
+				},
+				{
+					withCredentials: true,
+				}
 
-	const handleSubmit = () => {
-		console.log("Nội dung comment:", comment);
-		setComment(""); // Xóa nội dung sau khi đăng
+			);
+			doRefresh()
+			onComment(res.data);
+			setContent("");
+		} catch (err) {
+			console.error("❌ Failed to post comment", err);
+		}
 	};
 
 	return (
-		<div className=" w-full relative">
-			{/* Ô nhập comment */}
-			<div className="flex items-center py-2">
-				<input
-					type="text"
-					placeholder={t('Comment')}
-					className="w-full border-none outline-none p-1"
-					value={comment}
-					onChange={(e) => setComment(e.target.value)}
-					ref={inputRef}
-					style={{ color: "var(--text-color)" }}
-				/>
-
-				{/* Nút mở Emoji Picker */}
-				<FaSmile
-					className="text-gray-500 cursor-pointer w-[25px] h-[25px]"
-					onClick={() => setShowPicker(!showPicker)}
-				/>
-				{/* Nút Đăng chỉ hiển thị khi có nội dung */}
-				{comment && (
-					<p
-						className="ml-4 text-blue-600 font-bold text-lg text-center "
-						onClick={handleSubmit}
-					>
-						{t('send')}
-					</p>
-				)}
-
-				{/* Hiển thị Emoji Picker */}
-				{showPicker && (
-					<div className=" absolute bottom-12 right-0 z-10">
-						<Picker data={data} onEmojiSelect={handleEmojiSelect} />
-					</div>
-				)}
-			</div>
-		</div>
+		<form onSubmit={handleSubmit}>
+			<textarea
+				value={content}
+				onChange={(e) => setContent(e.target.value)}
+				placeholder="Nhập bình luận..."
+			/>
+			<button type="submit">Gửi</button>
+		</form>
 	);
-};
-
-export default CommentInput;
+}

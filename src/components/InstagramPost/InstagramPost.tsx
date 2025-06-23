@@ -1,77 +1,145 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart, FaComment, FaPaperPlane, FaBookmark, FaRegBookmark } from "react-icons/fa";
-import CommentInput from "../CommentInput/CommentInput";
 import { Modal, Carousel } from 'antd';
 import { calc } from "antd/es/theme/internal";
 import { IconDots } from "../icons/ic_dots";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { Post } from "../../types/posts";
+import { getUser } from "../../services/user";
+import { User } from "../../types/user";
+import { timeAgo } from "../../utils/date";
+import { deletePost } from "../../services/post";
+import { message } from "antd";
+import usePostStore from "../../stores/postStore";
+import EditBox from "../EditBox";
+import CommentInput from "../CommentInput/CommentInput";
 
-const contentStyle: React.CSSProperties = {
-	margin: 0,
-	height: '160px',
-	color: '#fff',
-	lineHeight: '160px',
-	textAlign: 'center',
-	background: '#364d79',
+type InstagramPostProps = {
+	post: Post;
+	first?: string;
 };
-const InstagramPost = ({ first }: { first?: string }) => {
+
+const InstagramPost = ({ post, first }: InstagramPostProps) => {
 	const [liked, setLiked] = useState(false);
 	const [saved, setSaved] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const images = [
-		"/images/uifaces-popular-image (11).jpg",
-		"/images/uifaces-popular-image (11).jpg",
-		"/images/uifaces-popular-image (11).jpg",
-		"/images/uifaces-popular-image (11).jpg",
-	];
+	const [showEdit, setShowEdit] = useState(false);
+	const [user, setUser] = useState<User>()
 	// Lấy giá trị theme từ context
 	const { theme } = useTheme();
+	const [showMenu, setShowMenu] = useState(false);
 
 	// Lấy hàm dịch `t` từ i18n
 	const { t } = useTranslation();
 	const iconColor = theme === "dark" ? "white" : "black";
+	const doRefresh = usePostStore(state => state.doRefresh);
+	const refresh = usePostStore(state => state.refresh);
+
+	const getUserId = () => {
+		try {
+			const userStorage = localStorage.getItem("user-storage");
+			if (!userStorage) return null;
+			const parsed = JSON.parse(userStorage);
+			return parsed.state?.user?.id || null;
+		} catch (err) {
+			console.error("Lỗi khi lấy userId từ localStorage:", err);
+			return null;
+		}
+	};
+
+	const userId = getUserId();
+
+	console.log("userId", userId)
+
+	useEffect(() => {
+		const fetchUser = async (id: number) => {
+			if (post.user) {
+				const res: any = await getUser(id);
+				setUser(res)
+			}
+		};
+		fetchUser(post.user);
+	}, []);
+
+	const handleToggleMenu = (e: React.MouseEvent) => {
+		e.stopPropagation(); // Để tránh click lan ra ngoài nếu có
+		setShowMenu((prev) => !prev);
+	};
+
+	useEffect(() => {
+		if (!showMenu) return;
+		const handleClick = () => setShowMenu(false);
+		window.addEventListener("click", handleClick);
+		return () => window.removeEventListener("click", handleClick);
+	}, [showMenu]);
+
+	const handleDeletePost = async (id: number) => {
+		try {
+			await deletePost(id);
+			message.success("Xóa bài viết thành công!");  // Thông báo thành công
+			console.log(refresh)
+			doRefresh();
+			// Nếu muốn reload lại list bài viết, gọi hàm fetch lại data ở đây
+		} catch (err) {
+			message.error("Xóa bài viết thất bại!");       // Thông báo lỗi nếu có
+		}
+	};
 
 	return (
 		<div className={`max-w-[470px] h-[900px] var(--bg-color) pt-2 ${first ? "" : "border-t border-gray-600"}`}>
 			{/* Header */}
-			<div className="flex items-center justify-between pt-3 pb-3">
+			<div className="flex items-center justify-between pt-3 pb-3 relative">
 				<div className="flex items-center gap-3">
 					<img
 						src="/images/uifaces-popular-image (11).jpg"
 						alt="Avatar"
 						className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
 					/>
-					<span className="font-semibold text-gray-800" style={{ color: "var(--text-color)" }}>username</span>
-					<span className="font-normal text-[14px] text-gray-400" style={{ color: "var(--white-to-gray)" }}>9 {t('hour')}</span>
+					<span className="font-semibold text-gray-800" style={{ color: "var(--text-color)" }}>{user?.username}</span>
+					<span className="font-normal text-[14px] text-gray-400" style={{ color: "var(--white-to-gray)" }}>{timeAgo(post?.created_at)}</span>
 				</div>
-				<p className="text-gray-600"><IconDots color={iconColor} /></p>
-			</div>
+				<div onClick={handleToggleMenu} className="text-gray-600 "><IconDots color={iconColor} /></div>
+				{showMenu && (
+					<div className="absolute right-0 z-10 top-15 bg-white border rounded shadow flex flex-col ">
+						<button
+							className="text-center hover:bg-gray-100 p-0 m-0"
+							onClick={() => setShowEdit(true)}
+						>
+							Sửa
+						</button>
 
+						<button
+							className=" text-center hover:bg-gray-100 text-red-500 p-0 m-0"
+							onClick={() => {
+								handleDeletePost(post?.id)
+							}}
+						>
+							Xóa
+						</button>
+					</div>
+				)}
+			</div>
+			{showEdit && (
+				<EditBox
+					postId={post.id}
+					content={post.content}
+					typePost={post.type_post}
+					mediaList={post.media_list}
+					onClose={() => setShowEdit(false)}
+				// có thể thêm onUpdated nếu cần reload danh sách post
+				/>
+
+			)}
 			{/* Post Image */}
 			<Carousel
 				infinite={false}
 				arrows className="ant-custom">
-				<img
-					src="/images/uifaces-popular-image (11).jpg"
-					alt="Post"
-					className="w-full h-[585px] object-cover rounded-lg"
-				/>
-				<img
-					src="/images/uifaces-popular-image (11).jpg"
-					alt="Post"
-					className="w-full h-[585px] object-cover rounded-lg"
-				/>
-				<img
-					src="/images/uifaces-popular-image (11).jpg"
-					alt="Post"
-					className="w-full h-[585px] object-cover rounded-lg"
-				/>
-				<img
-					src="/images/uifaces-popular-image (11).jpg"
-					alt="Post"
-					className="w-full h-[585px] object-cover rounded-lg"
-				/>
+				{post.media_list.map((media) => (
+					<img key={media.id} src={media.media} alt="" className="w-full h-[585px] object-cover rounded-lg"
+					/>
+				))}
+
 			</Carousel>
 
 			{/* Actions */}
@@ -89,13 +157,13 @@ const InstagramPost = ({ first }: { first?: string }) => {
 			</div>
 			{/* Likes and Caption */}
 			<div className="pt-3">
-				<p className="font-semibold">1,234 {t('likes')}</p>
-				<p><span className="font-semibold">username</span> This is a sample caption! #hashtag</p><p className="cursor-pointer text-blue-500 font-semibold" onClick={() => setIsModalOpen(true)}>{t('view_more')} 100 {t('comment')} </p>
+				<p className="font-semibold">{post?.number_emotion} {t('likes')}</p>
+				<p><span className="font-semibold">{user?.username}</span> {post?.content} </p><p className="cursor-pointer text-blue-500 font-semibold" onClick={() => setIsModalOpen(true)}>{t('view_more')} {post?.number_comment} {t('comment')} </p>
 			</div>
 
 			{/* Comment Input */}
 			<div className="mt-2 pt-2 ">
-				<CommentInput />
+				<CommentInput postId={post?.id} onComment={(c: any) => console.log("✅", c)} />
 			</div>
 
 			{/* Modal hiển thị hình ảnh + comments */}
@@ -105,8 +173,9 @@ const InstagramPost = ({ first }: { first?: string }) => {
 					{/* Hình ảnh bên trái */}
 					<div className="w-[55%]">
 						<Carousel infinite={false} arrows>
-							{images.map((img, index) => (
-								<img key={index} src={img} alt="Post" className="w-full h-[90vh] object-cover" />
+							{post.media_list.map((media) => (
+								<img key={media.id} src={media.media} alt="" className="w-full h-[90vh] object-cover"
+								/>
 							))}
 						</Carousel>
 					</div>
@@ -200,7 +269,10 @@ const InstagramPost = ({ first }: { first?: string }) => {
 						</div>
 						<div className="pl-5 pr-5 border-t "
 							style={{ borderColor: "var(--white-to-gray)" }}
-						><CommentInput /></div>
+						>
+							<CommentInput postId={post?.id} onComment={(c) => console.log("✅", c)} />
+
+						</div>
 					</div>
 				</div>
 			</Modal>

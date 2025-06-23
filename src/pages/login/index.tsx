@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { notification } from "antd";
-import { loginTest } from "../../services/auth";
+import { callLogin } from "../../services/auth";
 import { FaFacebook } from "react-icons/fa";
 import "./login.css";
 import useUserStore from "../../stores/useUserStore";
@@ -18,8 +18,7 @@ const Login: React.FC = () => {
   const setUser = useUserStore((state) => state.setUser);
 
   const onSubmit = async (data: LoginForm) => {
-    const res: any = await loginTest(data.username, data.password);
-    console.log(res)
+    const res: any = await callLogin(data.username, data.password);
     if (res?.status === 200 && res?.user) {
       setUser(res.user);
       localStorage.setItem("isLogin", "true");

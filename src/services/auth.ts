@@ -9,7 +9,7 @@ interface RegisterData {
     password: string;
 }
 
-export const loginTest = async (email: any, password: any) => {
+export const callLogin = async (email: any, password: any) => {
     try {
         const res = await instance.post("/auth/login/", {
             email,
@@ -34,45 +34,11 @@ export const callLogout = async () => {
     try {
         const res = await axios.post(
             "http://localhost:8000/api/auth/logout/",
-            {}, // body rỗng
-            { withCredentials: true } // cấu hình
+            {},
+            { withCredentials: true }
         );
         return res;
     } catch (error) {
-        throw error; // ném lại lỗi nếu cần xử lý ở component
+        throw error;
     }
-};
-
-export const getPost = async () => {
-    try {
-        const res = await instance.get(
-            "/posts/",
-            { withCredentials: true } // cấu hình
-        );
-        console.log("res post", res);
-        return res;
-    } catch (error) {
-        throw error; // ném lại lỗi nếu cần xử lý ở component
-    }
-};
-
-export const getUser = async () => {
-    try {
-        const res = await instance.get(
-            "/users/1",
-            { withCredentials: true } // cấu hình
-        );
-        return res;
-    } catch (error) {
-        console.error("Lỗi khi get user:", error);
-        throw error; // ném lại lỗi nếu cần xử lý ở component
-    }
-};
-
-export const callInfoUser = (token: any) => {
-    return instance.get("/taikhoan/me", {
-        headers: {
-            Authorization: `Bearer ${token}`, // Thêm token vào header
-        },
-    });
 };

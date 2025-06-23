@@ -50,9 +50,6 @@ button {
     padding: 10px 20px;
     border: none;
     cursor: pointer;
-    margin-top: 20px;
-    background: var(--text-color);
-    color: var(--bg-color);
     border-radius: 5px;
 }
 

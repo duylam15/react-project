@@ -1,31 +1,20 @@
-export const getTimePast = (date: Date, t: any): string => {
-  const currentDate: Date = new Date()
-  const millisecondsInDay: number = 1000 * 60 * 60 * 24
+export function timeAgo(input: string): string {
+    const now = new Date();
+    const postTime = new Date(input);
+    const diffMs = now.getTime() - postTime.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+    const diffMonths = Math.floor(diffDays / 30.44); // Xấp xỉ
+    const diffYears = Math.floor(diffDays / 365.25);
 
-  const pastTimeSecond: number = currentDate.getTime() - date.getTime()
-  const pastTimeDate: number = pastTimeSecond / millisecondsInDay
-  if (pastTimeDate < 30) {
-    if(pastTimeDate < 1) {
-        return `${"recently"}`
-    }
-
-    return `${Math.floor(pastTimeDate)} ${t("day")}`
-  } else if (pastTimeDate < 365) {
-    const month: number = Math.floor(pastTimeDate / 30)
-
-    return `${month} ${t("month")}`
-  } else {
-    const year: number = Math.floor(pastTimeDate / 365)
-
-    return `${year} ${t("year")}`
-  }
-}
-
-export const formatDate = (
-  value: Date | string,
-  formatting: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' }
-) => {
-  if (!value) return value
-
-  return Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
+    if (diffSeconds < 60) return `${diffSeconds} giây trước`;
+    if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+    if (diffHours < 24) return `${diffHours} giờ trước`;
+    if (diffDays < 7) return `${diffDays} ngày trước`;
+    if (diffWeeks < 5) return `${diffWeeks} tuần trước`;
+    if (diffMonths < 12) return `${diffMonths} tháng trước`;
+    return `${diffYears} năm trước`;
 }
