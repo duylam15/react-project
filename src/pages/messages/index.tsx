@@ -1,89 +1,94 @@
-import React, { useState } from "react";
-import CommentInput from "../../components/CommentInput/CommentInput";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import CommentInput from "../../components/CommentInput/CommentInput";
+import { getUserConversations } from "../../services/conversation";
+import MessageInput from "../../components/MessageInput";
 
 export default function Messages() {
-	const [selectedChat, setSelectedChat] = useState<number | null>(null);
-
-	const conversations = [
-		{ id: 1, name: "John Doe", message: "Hey! How are you?", img: "https://i.pravatar.cc/150?img=1" },
-		{ id: 2, name: "Jane Smith", message: "Let's meet tomorrow", img: "https://i.pravatar.cc/150?img=2" },
-		{ id: 3, name: "Alex Brown", message: "Check out this pic!", img: "https://i.pravatar.cc/150?img=3" },
-	];
-
+	const [selectedConversationId, setSelectedConversationId] = useState<number | null>(null);
+	const [conversations, setConversations] = useState<any[]>([]);
 	const { t } = useTranslation();
 
+	const getUserId = () => {
+		try {
+			const userStorage = localStorage.getItem("user-storage");
+			if (!userStorage) return null;
+			const parsed = JSON.parse(userStorage);
+			return parsed.state?.user?.id || null;
+		} catch (err) {
+			console.error("Lỗi lấy user id:", err);
+			return null;
+		}
+	};
+
+	const userId = getUserId();
+
+	useEffect(() => {
+		const fetchConversations = async () => {
+			const userId = getUserId();
+			if (!userId) return;
+			try {
+				const res = await getUserConversations(userId);
+				setConversations(res.data);
+			} catch (err) {
+				console.error("Lỗi lấy danh sách conversations:", err);
+			}
+		};
+		fetchConversations();
+	}, []);
 
 	return (
-		<div className="flex w-[100%] h-[100vh]" style={{ borderColor: "var(--white-to-gray)" }}>
-			{/* Sidebar danh sách chat */}
-			<div className="w-[550px] border-r" style={{ borderColor: "var(--white-to-gray)" }}>
-				<h2 className="p-4 pt-6 text-2xl font-bold">Usename</h2>
-				<h2 className="p-4 pt-6 font-bold">{t('messages')}</h2>
-				<div className="overflow-y-auto">
-					{conversations.map((chat) => (
+		<div className="flex w-full h-screen">
+			{/* Sidebar danh sách conversation */}
+			<div className="w-[400px] border-r overflow-y-auto">
+				<h2 className="p-4 pt-6 font-bold text-xl">{t("messages")}</h2>
+				{conversations.map((conv) => {
+					// Hiển thị người còn lại trong cuộc trò chuyện
+					const currentUserId = getUserId();
+					const otherUser = conv.members.find((m: any) => m.id !== currentUserId);
+					return (
 						<div
-							key={chat.id}
-							className="flex items-center p-3 cursor-pointer hover:bg-gray-100"
-							style={{
-								color: "var(--text-color)",
-								background: selectedChat === chat.id ? "var(--message-bg-color)" : "transparent",
-								borderColor: "var(--white-to-gray)",
+							key={conv.id}
+							className={`p-4 cursor-pointer hover:bg-gray-100 flex items-center ${selectedConversationId === conv.id ? "bg-gray-200" : ""}`}
+							onClick={() => {
+								setSelectedConversationId(conv.id);
+								console.log("Conversation selected:", conv);
 							}}
-							onClick={() => setSelectedChat(chat.id)}
 						>
-							<img src={chat.img} alt={chat.name} className="w-15 h-15 rounded-full mr-3" />
-							<div>
-								<p className="font-normal" style={{ color: "var(--text-color)" }}>{chat.name}</p>
-								<p className="text-sm" style={{ color: "var(--message-text-color)" }}>{chat.message}</p>
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-
-			{/* Khung chat bên phải */}
-			<div className="w-[100%] flex flex-col">
-				{selectedChat ? (
-					<div className="flex flex-col h-full">
-						<div className="p-4 border-b flex items-center" style={{ borderColor: "var(--white-to-gray)" }}>
 							<img
-								src={conversations.find((chat) => chat.id === selectedChat)?.img}
-								alt=""
+								src={otherUser?.url_avatar || "https://i.pravatar.cc/150?img=1"}
+								alt="avatar"
 								className="w-10 h-10 rounded-full mr-3"
 							/>
-							<p className="font-semibold">{conversations.find((chat) => chat.id === selectedChat)?.name}</p>
+							<div>
+								<p className="font-semibold">{otherUser?.username || "Unknown"}</p>
+								<p className="text-sm text-gray-500">{conv.name}</p>
+							</div>
 						</div>
+					);
+				})}
+			</div>
 
-						<div className="flex flex-col justify-center items-center mt-6">
-							<img
-								src={conversations.find((chat) => chat.id === selectedChat)?.img}
-								alt=""
-								className="w-25 h-25 rounded-full"
-							/>
-							<p className="text-[20px] font-semibold mt-2">{conversations.find((chat) => chat.id === selectedChat)?.name}</p>
+			{/* Chat box */}
+			<div className="flex-1 flex flex-col">
+				{selectedConversationId ? (
+					<>
+						<div className="p-4 border-b font-semibold">
+							Conversation ID: {selectedConversationId}
 						</div>
+						<div className="flex-1 p-4 overflow-y-auto">
+							{/* Message content placeholder */}
+							<p className="mb-2 p-2 bg-gray-200 rounded-xl inline-block">Hello!</p>
+							<p className="mb-2 p-2 bg-blue-500 text-white rounded-xl inline-block ml-auto">Hi!</p>
+						</div>
+						<div className="border-t p-4">
+							<MessageInput conversationId={selectedConversationId} senderId={userId} onSendMessage={(msg) => console.log("Đã gửi:", msg)} />
 
-						{/* Nội dung tin nhắn */}
-						<div className="flex-1 overflow-y-auto p-4">
-							<p
-								className="p-2 pl-4 rounded-3xl max-w-xs mb-2"
-								style={{ color: "var(--text-color)", background: "var(--message-bg-color)", borderColor: "var(--white-to-gray)" }}
-							>
-								Hello!
-							</p>
-							<p className="bg-blue-400 text-white p-2 pl-4 rounded-3xl max-w-xs mb-2 ml-auto">Hi there! 👋</p>
 						</div>
-
-						{/* Input gửi tin nhắn */}
-						<div className="flex items-center rounded-full px-4 focus:outline-none ml-4 mr-4 mb-4 border"
-							style={{ borderColor: "var(--white-to-gray)" }}>
-							<CommentInput />
-						</div>
-					</div>
+					</>
 				) : (
-					<div className="flex items-center justify-center h-full text-gray-500">
-						Select a conversation to start chatting
+					<div className="flex justify-center items-center h-full text-gray-400">
+						{t("Select a conversation")}
 					</div>
 				)}
 			</div>
