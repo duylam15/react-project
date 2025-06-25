@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import styles from "../CreateBox/CreateBox.module.css";
-import { updatePost } from "../../services/post"; // Cần có API cập nhật
 import { useState } from "react";
-import usePostStore from "../../stores/postStore";
+import usePostStore from "../../../stores/postStore";
+import { updatePost } from "../../../services/post";
 
 interface MediaItem {
 	id: number;

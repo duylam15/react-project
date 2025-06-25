@@ -8,14 +8,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 // Context
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../../../contexts/ThemeContext";
 
 // Components
 import Search from "../search/Search";
-import Notifications from "../Notifications";
-import CreateBox from "../CreateBox";
-import SettingBox from "../SettingBox";
-import NavItem from "../nav_item";
 
 // Icons
 import {
@@ -27,18 +23,22 @@ import {
 	IconHomeActive,
 	IconMessages,
 	IconMessagesActive,
+	IconMore,
 	IconNofication,
 	IconNoficationActive,
 	IconSearch,
 	IconSearchActive,
 } from "../icons";
-import { IconInstagramLogo } from "../icons/ic_instagram_logo";
-import { MenuAvatar } from "../icons/ic_menu_avatar";
-import { IconMore } from "../icons/ic_more";
-import { InstagramLogo } from "../icons/ic_Instagram_logo_text";
 
 // Styles
 import styles from "./styles.module.css";
+import { IconInstagramLogo } from "../icons/ic_instagram_logo";
+import { InstagramLogo } from "../icons/ic_Instagram_logo_text";
+import NavItem from "../nav_item";
+import { MenuAvatar } from "../icons/ic_menu_avatar";
+import CreateBox from "../../Post/CreateBox";
+import SettingBox from "../SettingBox";
+import Notifications from "../../Notifications";
 
 
 export default function SideBar(): JSX.Element {

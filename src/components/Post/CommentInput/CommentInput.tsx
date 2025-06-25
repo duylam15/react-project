@@ -1,13 +1,13 @@
 // src/components/CommentBox.js
 import { useState } from "react";
 import axios from "axios";
-import usePostStore from "../../stores/postStore";
+import usePostStore from "../../../stores/postStore";
 
-export default function CommentInput({ postId, onComment }) {
+export default function CommentInput({ postId, onComment }: { postId: any, onComment: any }) {
 	const [content, setContent] = useState("");
 	const doRefresh = usePostStore(state => state.doRefresh);
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 		if (!content.trim()) return;
 

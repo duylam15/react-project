@@ -1,7 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import LayoutDefault from '../layouts/LayoutDefault';
-
-import React, { Suspense } from 'react';
 import Home from '../pages/home';
 import Error from '../pages/error';
 import MyProfile from '../pages/my_profile';
@@ -10,7 +8,6 @@ import Explore from '../pages/explore';
 import Login from '../pages/login';
 import Register from '../pages/register';
 import ForgotPassword from '../pages/forgotpassword';
-import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './ProtectedRoute/GuestRoute';
 import RequireAuth from './ProtectedRoute/RequireAuth';
 import LayoutAdmin from '../layouts/LayoutAdmin';
@@ -18,7 +15,6 @@ import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
 import AdminPostPage from '../pages/admin/AdminPostPage';
 import AdminUserPage from '../pages/admin/AdminUserPage';
 
-const AdminPage = React.lazy(() => import('../pages/admin'));
 export const router = createBrowserRouter([
   {
     path: '/',

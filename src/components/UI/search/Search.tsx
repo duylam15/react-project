@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Input, List, Avatar, Spin } from "antd";
+import { useState } from "react";
+import { List, Spin } from "antd";
 import { LoadingOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 

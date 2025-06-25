@@ -1,4 +1,3 @@
-import axios from "axios";
 import instance from "../helpers/axios"; // hoặc đường dẫn đến file axios của bạn
 
 // Định nghĩa kiểu dữ liệu cho data

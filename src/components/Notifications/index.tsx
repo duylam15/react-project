@@ -5,7 +5,7 @@ import axios from "axios";
 import usePostStore from "../../stores/postStore";
 
 export default function Notification() {
-	const [notifications, setNotifications] = useState([]);
+	const [notifications, setNotifications] = useState<any>([]);
 	const getUserId = () => {
 		try {
 			const userStorage = localStorage.getItem("user-storage");
@@ -30,19 +30,19 @@ export default function Notification() {
 		// Kết nối WebSocket
 		connectSocket(userId, (data) => {
 			doRefresh()
-			setNotifications((prev) => [data, ...prev]);
+			setNotifications((prev: any) => [data, ...prev]);
 		});
 
 		axios.get("http://localhost:8000/api/notifications/", {
 			withCredentials: true,
 		}).then((res) => {
-			setNotifications(prev => {
+			setNotifications((prev: any) => {
 				// Nếu prev.length === 0 thì user chưa nhận gì => dùng kết quả API
 				if (prev.length === 0) return res.data;
 
 				// Nếu có realtime trước đó => gộp thêm vào (tránh trùng bằng ID)
-				const existingIds = new Set(prev.map(item => item.id));
-				const newNotis = res.data.filter(n => !existingIds.has(n.id));
+				const existingIds = new Set(prev.map((item: any) => item.id));
+				const newNotis = res.data.filter((n: any) => !existingIds.has(n.id));
 				return [...prev, ...newNotis];
 			});
 		});

@@ -30,7 +30,7 @@ export default function LayoutAdmin() {
 		<div className="flex flex-col min-h-screen">
 			{/* Header */}
 			<header className="flex justify-between items-center bg-pink-100 p-4 border-b border-gray-300">
-				<h1 className="text-lg font-semibold text-pink-600">Admin Panel</h1>
+				<h1 className="text-lg font-semibold text-pink-600" onClick={() => navigate("/")}>Admin Panel</h1>
 				<div className="flex items-center gap-4">
 					<span className="text-gray-700">👤 {username}</span>
 					<button

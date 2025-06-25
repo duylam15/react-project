@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import SideBar from '../../components/SideBar';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import "./LayoutDefault.scss"
+import SideBar from '../../components/UI/SideBar';
 
 export default function LayoutDefault() {
 	return (

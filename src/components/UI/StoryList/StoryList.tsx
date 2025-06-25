@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import "./index.css"
-import InstagramPost from "../InstagramPost/InstagramPost";
 
 const StoryList = () => {
 	const listRef = useRef<HTMLDivElement>(null);

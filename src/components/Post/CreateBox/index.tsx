@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import styles from "./CreateBox.module.css";
-import { createPost } from "../../services/post";
 import { useState } from "react";
-import usePostStore from "../../stores/postStore";
+import usePostStore from "../../../stores/postStore";
+import { createPost } from "../../../services/post";
 
 interface CreateBoxProps {
 	onClose: () => void;

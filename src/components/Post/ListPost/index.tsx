@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./index.css";
-import InstagramPost from "../InstagramPost/InstagramPost";
-import { getPost } from "../../services/post";
-import { Post } from "../../types/posts";
-import usePostStore from "../../stores/postStore";
+import InstagramPost from "../InstagramPost";
+import usePostStore from "../../../stores/postStore";
+import { Post } from "../../../types/posts";
+import { getPost } from "../../../services/post";
 
 const INIT_LIMIT = 5; // Số post mỗi lần load thêm
 

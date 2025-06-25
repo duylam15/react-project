@@ -1,8 +1,8 @@
 import styles from "./SettingBox.module.css";
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import '../../configs/i18n';
-import { useTheme } from '../../contexts/ThemeContext';
+import '../../../configs/i18n';
+import { useTheme } from '../../../contexts/ThemeContext';
 interface SettingBoxProps {
 	onClose: () => void;
 }
