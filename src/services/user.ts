@@ -6,7 +6,7 @@ export const getAllUsers = async () => {
         const res = await instance.get("/users/", {
             withCredentials: true,
         });
-        console.log(res);
+        // console.log("res getAllUsers", res);
         return res;
     } catch (error) {
         console.error("Lỗi khi get user:", error);
@@ -20,6 +20,7 @@ export const getUser = async (id: number) => {
         const res = await instance.get(`/users/${id}`, {
             withCredentials: true,
         });
+        // console.log("res getUser", res);
         return res;
     } catch (error) {
         console.error("Lỗi khi get user:", error);
@@ -33,7 +34,7 @@ export const createUser = async (userData: any) => {
         const res = await instance.post("/users/", userData, {
             withCredentials: true,
         });
-        console.log(res);
+        // console.log(res);
         return res;
     } catch (error) {
         console.error("Lỗi khi tạo user:", error);
@@ -44,10 +45,26 @@ export const createUser = async (userData: any) => {
 // Sửa user (update)
 export const updateUser = async (id: string, userData: any) => {
     try {
-        const res = await instance.put(`/users/${id}/`, userData, {
+        const formData = new FormData();
+
+        // Thêm các trường thông thường
+        for (const key in userData) {
+            if (
+                userData.hasOwnProperty(key) &&
+                userData[key] !== undefined &&
+                userData[key] !== null
+            ) {
+                formData.append(key, userData[key]);
+            }
+        }
+
+        const res = await instance.patch(`/users/${id}/`, formData, {
             withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
         });
-        console.log(res);
+        // console.log(res);
         return res;
     } catch (error) {
         console.error("Lỗi khi cập nhật user:", error);
@@ -61,7 +78,7 @@ export const deleteUser = async (id: string) => {
         const res = await instance.delete(`/users/${id}/`, {
             withCredentials: true,
         });
-        console.log(res);
+        // console.log(res);
         return res;
     } catch (error) {
         console.error("Lỗi khi xóa user:", error);

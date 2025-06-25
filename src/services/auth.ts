@@ -22,7 +22,7 @@ export const callLogin = async (email: any, password: any) => {
 };
 
 export const callRegister = async (data: RegisterData) => {
-    return instance.post("/api/auth/register", {
+    return instance.post("/auth/register", {
         email: data.email,
         fullName: data.fullname,
         username: data.username,
@@ -32,8 +32,8 @@ export const callRegister = async (data: RegisterData) => {
 
 export const callLogout = async () => {
     try {
-        const res = await axios.post(
-            "http://localhost:8000/api/auth/logout/",
+        const res = await instance.post(
+            "/auth/logout/",
             {},
             { withCredentials: true }
         );

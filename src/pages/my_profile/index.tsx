@@ -5,10 +5,12 @@ import { IconDots } from "../../components/icons/ic_dots";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { getUser } from "../../services/user";
+import { getUser, updateUser } from "../../services/user";
 import { acceptFriendRequest, declineFriendRequest, getFriendStatus, sendFriendRequest } from "../../services/friendRequest";
 import { connectSocket, disconnectSocket } from "../../helpers/socket";
 import { addMemberToConversation, createConversation } from "../../services/conversation";
+import axios from "axios";
+import usePostStore from "../../stores/postStore";
 
 export default function MyProfile() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,6 +45,16 @@ export default function MyProfile() {
 	else
 		userId = id
 
+	const myUserId = getUserId(); // user đang đăng nhập
+
+	const viewedUserId = id ? Number(id) : myUserId; // người đang được xem
+	const isOwnProfile = !id || Number(id) === Number(myUserId);
+
+
+	const doRefresh = usePostStore(state => state.doRefresh);
+	const refresh = usePostStore(state => state.refresh);
+
+
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
@@ -54,7 +66,7 @@ export default function MyProfile() {
 			}
 		};
 		fetchUser();
-	}, [id]);
+	}, [id, refresh]);
 
 	console.log("user", user)
 
@@ -64,7 +76,7 @@ export default function MyProfile() {
 		setIsModalOpen(true);
 	};
 
-	const [friendStatus, setFriendStatus] = useState<"none" | "sent" | "received" | "friends">("none");
+	const [friendStatus, setFriendStatus] = useState<any>();
 	const [requestId, setRequestId] = useState<number | null>(null);
 
 	useEffect(() => {
@@ -73,15 +85,17 @@ export default function MyProfile() {
 			if (!user?.id || !myId || user.id === myId) return;
 
 			try {
-				const res = await getFriendStatus(myId, user.id);
-				setFriendStatus(res.data.status); // ex: 'sent', 'received', 'friends', 'none'
-				setRequestId(res.data.request_id || null);
+				const res: any = await getFriendStatus(myId, user.id);
+				setFriendStatus(res.status); // ex: 'sent', 'received', 'friends', 'none'
+				setRequestId(res?.request_id || null);
 			} catch (err) {
 				console.error("Lỗi lấy trạng thái kết bạn", err);
 			}
 		};
 		checkStatus();
 	}, [user]);
+
+	console.log("friendStatus", friendStatus)
 
 
 	useEffect(() => {
@@ -133,8 +147,8 @@ export default function MyProfile() {
 			const friendId = user.id;
 
 			// Tạo cuộc trò chuyện
-			const convRes = await createConversation("Cuộc trò chuyện mới", myId);
-			const conversationId = convRes.data.id;
+			const convRes: any = await createConversation("Cuộc trò chuyện mới", myId);
+			const conversationId = convRes.id;
 
 			// Thêm cả 2 người vào cuộc trò chuyện
 			await addMemberToConversation(conversationId, myId);
@@ -163,17 +177,78 @@ export default function MyProfile() {
 	// Lấy hàm dịch `t` từ i18n
 	const { t } = useTranslation();
 	const iconColor = theme === "dark" ? "white" : "black";
+	console.log("useruser", user)
+
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [newUsername, setNewUsername] = useState(user?.username || "");
+	const [newAvatar, setNewAvatar] = useState(user?.avatar || "");
+
+	const handleSaveProfile = async () => {
+		try {
+			await updateUser(myUserId, {
+				username: newUsername,
+				avatar: newAvatar,
+			});
+			setUser({ ...user, username: newUsername, avatar: newAvatar });
+			setIsEditModalOpen(false);
+		} catch (err) {
+			console.error("Cập nhật hồ sơ thất bại", err);
+		}
+	};
+
+	const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		const formData = new FormData();
+		formData.append("avatar_file", file);
+
+		try {
+			const res = await axios.post(
+				`http://localhost:8000/api/users/${myUserId}/upload-avatar/`,
+				formData,
+				{
+					withCredentials: true,
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
+				}
+			);
+
+			// ✅ Sau khi upload thành công → cập nhật avatar_url trong UI
+			setUser((prev: any) => ({
+				...prev,
+				avatar: res.data.avatar_key,
+				avatar_url: res.data.avatar_url,
+			}));
+			doRefresh()
+		} catch (err) {
+			console.error("Upload avatar thất bại", err);
+		}
+	};
+
 
 	return (
 		<div className=" ml-25 p-4 flex flex-col items-center ">
 			{/* Thông tin người dùng */}
 			<div className="flex items-center gap-30 mb-8">
 				{/* Ảnh đại diện */}
-				<div className="w-[168px] h-[168px] rounded-full overflow-hidden border-2 p-1.5  border-pink-500">
+				{/* Ảnh đại diện có thể click */}
+				<div
+					className="w-[168px] h-[168px] rounded-full overflow-hidden border-2 p-1.5 border-pink-500 cursor-pointer"
+					onClick={() => isOwnProfile && document.getElementById("avatarInput")?.click()}
+				>
 					<img
-						src="/images/uifaces-popular-image (11).jpg"
+						src={user?.avatar_url}
 						alt="Avatar"
-						className=" object-cover rounded-[99px]"
+						className="object-cover rounded-[99px]"
+					/>
+					<input
+						type="file"
+						id="avatarInput"
+						accept="image/*"
+						style={{ display: "none" }}
+						onChange={(e) => handleAvatarChange(e)}
 					/>
 				</div>
 
@@ -182,7 +257,16 @@ export default function MyProfile() {
 					<div className="flex items-center gap-4 justify-center">
 						<h2 className="text-xl font-normal">{user?.username}</h2>
 						<div className="bg-gray-200 px-4 py-1 rounded-md font-medium text-[14px] text-center w-[148px] h-[32px] leading-[100%] flex items-center justify-center text-black-600" style={{ background: "var( --hover-color)" }}>
-							{friendStatus === "friends" ? (
+							{isOwnProfile ? (
+								<button className="btn" onClick={() => {
+									setNewUsername(user?.username || "");
+									setNewAvatar(user?.avatar || "");
+									setIsEditModalOpen(true);
+								}}>
+									Chỉnh sửa hồ sơ
+								</button>
+
+							) : friendStatus === "friends" ? (
 								<div className="btn">Bạn bè</div>
 							) : friendStatus === "sent" ? (
 								<div className="btn text-gray-500 cursor-default">Đã gửi lời mời</div>
@@ -200,6 +284,7 @@ export default function MyProfile() {
 									Kết bạn
 								</button>
 							)}
+
 
 						</div>
 						<div className="bg-gray-200 px-4 py-1 rounded-md font-medium  text-[14px] text-center w-[100px] h-[32px] leading-[100%] flex items-center justify-center text-black-600" style={{ background: "var( --hover-color)" }}>
@@ -233,6 +318,28 @@ export default function MyProfile() {
 					</div>
 				))}
 			</div>
+
+
+			<Modal
+				title="Chỉnh sửa hồ sơ"
+				open={isEditModalOpen}
+				onCancel={() => setIsEditModalOpen(false)}
+				onOk={() => handleSaveProfile()}
+				okText="Lưu"
+				cancelText="Hủy"
+			>
+				<div className="flex flex-col gap-4">
+					<label>
+						Tên người dùng:
+						<input
+							type="text"
+							value={newUsername}
+							onChange={(e) => setNewUsername(e.target.value)}
+							className="w-full p-2 border rounded"
+						/>
+					</label>
+				</div>
+			</Modal>
 		</div>
 	);
 }

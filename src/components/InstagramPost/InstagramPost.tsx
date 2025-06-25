@@ -270,7 +270,7 @@ const InstagramPost = ({ post, first }: InstagramPostProps) => {
 						<div className="pl-5 pr-5 border-t "
 							style={{ borderColor: "var(--white-to-gray)" }}
 						>
-							<CommentInput postId={post?.id} onComment={(c) => console.log("✅", c)} />
+							<CommentInput postId={post?.id} onComment={(c: any) => console.log("✅", c)} />
 
 						</div>
 					</div>

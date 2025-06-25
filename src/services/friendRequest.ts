@@ -1,14 +1,14 @@
-import axios from "axios";
+import instance from "../helpers/axios"; // hoặc đường dẫn đến file axios của bạn
 
 export const getFriendList = (userId: number) =>
-    axios.get(`http://localhost:8000/api/friends/user/${userId}/`, {
+    instance.get(`/friends/user/${userId}/`, {
         withCredentials: true,
     });
 
 // Gửi lời mời kết bạn
 export const sendFriendRequest = (from_user: number, to_user: number) =>
-    axios.post(
-        "http://localhost:8000/api/friend-requests/",
+    instance.post(
+        "/friend-requests/",
         { from_user, to_user },
         {
             withCredentials: true,
@@ -17,8 +17,8 @@ export const sendFriendRequest = (from_user: number, to_user: number) =>
 
 // Chấp nhận lời mời kết bạn
 export const acceptFriendRequest = (requestId: number) =>
-    axios.post(
-        `http://localhost:8000/api/friend-requests/${requestId}/accept/`,
+    instance.post(
+        `/friend-requests/${requestId}/accept/`,
         {}, // body rỗng
         {
             withCredentials: true,
@@ -27,8 +27,8 @@ export const acceptFriendRequest = (requestId: number) =>
 
 // Từ chối lời mời kết bạn
 export const declineFriendRequest = (requestId: number) =>
-    axios.post(
-        `http://localhost:8000/api/friend-requests/${requestId}/decline/`,
+    instance.post(
+        `/friend-requests/${requestId}/decline/`,
         {}, // body rỗng
         {
             withCredentials: true,
@@ -37,9 +37,13 @@ export const declineFriendRequest = (requestId: number) =>
 
 // Lấy trạng thái mối quan hệ
 export const getFriendStatus = (myId: number, otherId: number) =>
-    axios.get(
-        `http://localhost:8000/api/friend-requests/status/?from=${myId}&to=${otherId}`,
-        {
-            withCredentials: true,
-        }
-    );
+    instance.get(`/friend-requests/status/?from=${myId}&to=${otherId}`, {
+        withCredentials: true,
+    });
+
+export const checkFriendship = async (user1Id: number, user2Id: number) => {
+    return instance.get(`/friends/check/`, {
+        params: { user1: user1Id, user2: user2Id },
+        withCredentials: true,
+    });
+};

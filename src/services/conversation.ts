@@ -1,17 +1,19 @@
-import axios from "axios";
+import instance from "../helpers/axios"; // hoặc đường dẫn đến file axios của bạn
 
 // Tạo mới cuộc trò chuyện
 export const createConversation = (name: string, created_by: number) =>
-    axios.post(
-        "http://localhost:8000/api/conversations/",
+    instance.post(
+        "/conversations/",
         { name, created_by },
         { withCredentials: true }
     );
 
 export const getUserConversations = (userId: number) => {
-    return axios.get(
-        `http://localhost:8000/api/conversations/?user_id=${userId}`,
-        { withCredentials: true }
+    return instance.get(
+        `/conversations/user/${userId}`,
+        {
+            withCredentials: true,
+        }
     );
 };
 
@@ -20,8 +22,8 @@ export const addMemberToConversation = (
     conversationId: number,
     userId: number
 ) =>
-    axios.post(
-        `http://localhost:8000/api/conversations/${conversationId}/add_member/`,
+    instance.post(
+        `/conversations/${conversationId}/add_member/`,
         { user_id: userId },
         { withCredentials: true }
     );

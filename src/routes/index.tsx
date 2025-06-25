@@ -13,6 +13,10 @@ import ForgotPassword from '../pages/forgotpassword';
 import ProtectedRoute from './ProtectedRoute';
 import GuestRoute from './ProtectedRoute/GuestRoute';
 import RequireAuth from './ProtectedRoute/RequireAuth';
+import LayoutAdmin from '../layouts/LayoutAdmin';
+import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminPostPage from '../pages/admin/AdminPostPage';
+import AdminUserPage from '../pages/admin/AdminUserPage';
 
 const AdminPage = React.lazy(() => import('../pages/admin'));
 export const router = createBrowserRouter([
@@ -49,16 +53,22 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <LayoutDefault />, // thêm layout vào
+    element: (
+      <LayoutAdmin />
+    ),
     errorElement: <Error />,
     children: [
       {
         index: true,
-        element: (
-          <ProtectedRoute>
-            <AdminPage />
-          </ProtectedRoute>
-        ),
+        element: <AdminDashboardPage />, // Trang tổng quan mặc định
+      },
+      {
+        path: 'posts',
+        element: <AdminPostPage />, // Quản lý bài viết
+      },
+      {
+        path: 'users',
+        element: <AdminUserPage />, // Quản lý người dùng
       },
     ],
   },

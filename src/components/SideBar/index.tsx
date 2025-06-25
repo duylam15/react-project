@@ -15,7 +15,7 @@ import Search from "../search/Search";
 import Notifications from "../Notifications";
 import CreateBox from "../CreateBox";
 import SettingBox from "../SettingBox";
-import NavItem from "../../components/nav_item";
+import NavItem from "../nav_item";
 
 // Icons
 import {
@@ -31,8 +31,8 @@ import {
 	IconNoficationActive,
 	IconSearch,
 	IconSearchActive,
-} from "../../components/icons";
-import { IconInstagramLogo } from "../../components/icons/ic_instagram_logo";
+} from "../icons";
+import { IconInstagramLogo } from "../icons/ic_instagram_logo";
 import { MenuAvatar } from "../icons/ic_menu_avatar";
 import { IconMore } from "../icons/ic_more";
 import { InstagramLogo } from "../icons/ic_Instagram_logo_text";

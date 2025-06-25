@@ -4,26 +4,23 @@ const mutex = new Mutex();
 
 const baseUrl = "http://localhost:8000/api";
 
+const rawAxios = axios.create({
+	baseURL: baseUrl,
+	withCredentials: true,
+});
+
 const instance = axios.create({
 	baseURL: baseUrl,
 	withCredentials: true,
 });
 
-
 const handleRefreshToken = async () => {
-	// console.log("🔁 Đang gọi refresh token (cookie-based)...");
 	return await mutex.runExclusive(async () => {
 		try {
-			const res = await instance.post(
-				'/auth/refresh/',   // endpoint cần đúng là POST
-				{},                 // body rỗng, hoặc tuỳ backend
-				{ withCredentials: true } // QUAN TRỌNG! để cookie gửi lên backend
-			);
-			// console.log("res refresh", res);
-			if (res && res.data) return res.data.access_token;
-			// else console.log("res xada");
+			const res = await rawAxios.post("/auth/refresh/", {});
+			return res.data.access_token;
 		} catch (err) {
-			// console.log("❌ Refresh token fail", err);
+			console.error("❌ Refresh token failed:", err);
 			return null;
 		}
 	});
