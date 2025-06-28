@@ -1,4 +1,19 @@
+// helpers/api/user.ts
 import instance from "../helpers/axios";
+
+// Tìm kiếm user theo từ khóa
+export const getUsersBySearch = async (query: string) => {
+    try {
+        const res = await instance.get("/users/search/", {
+            params: { q: query },
+            withCredentials: true,
+        });
+        return res; // thường chỉ cần .data
+    } catch (error) {
+        console.error("❌ Lỗi khi tìm user:", error);
+        throw error;
+    }
+};
 
 // Lấy tất cả user
 export const getAllUsers = async () => {

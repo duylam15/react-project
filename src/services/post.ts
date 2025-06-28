@@ -1,4 +1,19 @@
+// helpers/api/post.ts
 import instance from "../helpers/axios";
+
+// Tìm kiếm post theo từ khóa
+export const getPostsBySearch = async (query: string) => {
+    try {
+        const res = await instance.get("/posts/search/", {
+            params: { q: query },
+            withCredentials: true,
+        });
+        return res;
+    } catch (error) {
+        console.error("❌ Lỗi khi tìm post:", error);
+        throw error;
+    }
+};
 
 // Lấy 1 hoặc nhiều post (url là dạng "/posts/?limit=5&offset=0" hoặc chỉ "/posts/1")
 export const getPost = async (url: string) => {

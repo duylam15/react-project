@@ -3,6 +3,7 @@ import styles from "./CreateBox.module.css";
 import { useState } from "react";
 import usePostStore from "../../../stores/postStore";
 import { createPost } from "../../../services/post";
+import { useNavigate } from "react-router-dom";
 
 interface CreateBoxProps {
 	onClose: () => void;
@@ -16,6 +17,7 @@ export default function CreateBox({ onClose }: CreateBoxProps) {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState<string | null>(null);
 	const doRefresh = usePostStore(state => state.doRefresh);
+	const navigate = useNavigate();
 
 	// Xử lý chọn file
 	const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +29,6 @@ export default function CreateBox({ onClose }: CreateBoxProps) {
 			]);
 		}
 	};
-
 
 	// Xử lý submit
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -51,6 +52,11 @@ export default function CreateBox({ onClose }: CreateBoxProps) {
 			const res = await createPost(formData);
 
 			setMessage("Đăng bài thành công!");
+			navigate("/", { replace: true });
+			onClose()
+			// Cuộn lên đầu trang
+			window.scrollTo({ top: 0, behavior: "smooth" });
+
 			setContent("");
 			setTypePost("IMAGE");
 			setMediaFiles([]);

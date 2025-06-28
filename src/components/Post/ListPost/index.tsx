@@ -20,7 +20,7 @@ const ListPost = () => {
 		const fetchAllPosts = async () => {
 			setLoading(true);
 			try {
-				const totalLimit = posts.length > 0 ? posts.length : INIT_LIMIT;
+				const totalLimit = INIT_LIMIT;
 				const url = `/posts/?limit=${totalLimit}`;
 				const res: any = await getPost(url);
 				setPosts(res.results);
